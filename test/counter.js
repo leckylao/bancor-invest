@@ -10,7 +10,7 @@ contract("counter", async ([_, owner, ...otherAccounts]) => {
 
   beforeEach(async function () {
     counter = await Counter.new();
-    counter.initialise(value, { from: owner });
+    counter.methods['initialize(uint256)'](value, { from: owner });
   });
 
   it("should have proper owner", async () => {
