@@ -55,12 +55,17 @@ function App() {
   }
 
   // load bancor registry on Ropsten
-  const contractRegistryContract = new context.lib.eth.Contract(ContractRegistry, '0xFD95E724962fCfC269010A0c6700Aa09D5de3074');
-  const registryBlockchainId = async () => {
-    await contractRegistryContract.methods.addressOf(context.lib.utils.asciiToHex('BancorConverterRegistry')).call();
+  const init = async () => {
+    let contractRegistryContract = new context.lib.eth.Contract(ContractRegistry, '0xFD95E724962fCfC269010A0c6700Aa09D5de3074');
+    let registryBlockchainId = await contractRegistryContract.methods.addressOf(context.lib.utils.asciiToHex('BancorConverterRegistry')).call();
+    console.log(registryBlockchainId);
+    let registry = new context.lib.eth.Contract(BancorConverterRegistry, registryBlockchainId);
+    let smartTokenCount = await registry.methods.getSmartTokenCount().call();
+    let smartTokens = await registry.methods.getSmartTokens().call();
+    console.log(smartTokenCount);
+    console.log(smartTokens);
   }
-  const registry = new context.lib.eth.Contract(BancorConverterRegistry, registryBlockchainId);
-  console.log(registry);
+  init();
 
   function renderNoWeb3() {
     return (
