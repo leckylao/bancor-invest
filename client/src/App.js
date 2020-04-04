@@ -3,13 +3,14 @@ import React, { useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { useWeb3Network, useEphemeralKey, useWeb3Injected } from '@openzeppelin/network/react';
 
-import Header from './components/Header/index.js';
-import Footer from './components/Footer/index.js';
-import Hero from './components/Hero/index.js';
 import Web3Info from './components/Web3Info/index.js';
 import Counter from './components/Counter/index.js';
 
 import styles from './App.module.scss';
+
+// import bancor from 'bancor-sdk';
+import { ContractRegistry } from './contracts/ContractRegistry';
+import { BancorConverterRegistry } from './contracts/BancorConverterRegistry';
 
 // eslint-disable-next-line no-unused-vars
 const infuraToken = process.env.REACT_APP_INFURA_TOKEN || '95202223388e49f48b423ea50a70e336';
@@ -20,19 +21,19 @@ function App() {
   const signKey = useEphemeralKey();
 
   // get GSN web3
-  // const context = useWeb3Network(`wss://rinkeby.infura.io/ws/v3/${infuraToken}`, {
-  //   pollInterval: 15 * 1000,
-  //   gsn: {
-  //     signKey,
-  //   },
-  // });
-
-  const context = useWeb3Network('http://127.0.0.1:8545', {
+  const context = useWeb3Network(`wss://ropsten.infura.io/ws/v3/${infuraToken}`, {
+    pollInterval: 15 * 1000,
     gsn: {
-      dev: true,
       signKey,
     },
   });
+
+  // const context = useWeb3Network('http://127.0.0.1:8545', {
+  //   gsn: {
+  //     dev: true,
+  //     signKey,
+  //   },
+  // });
 
   // load Counter json artifact
   let counterJSON = undefined;
@@ -53,6 +54,14 @@ function App() {
     }
   }
 
+  // load bancor registry on Ropsten
+  const contractRegistryContract = new context.lib.eth.Contract(ContractRegistry, '0xFD95E724962fCfC269010A0c6700Aa09D5de3074');
+  const registryBlockchainId = async () => {
+    await contractRegistryContract.methods.addressOf(context.lib.utils.asciiToHex('BancorConverterRegistry')).call();
+  }
+  const registry = new context.lib.eth.Contract(BancorConverterRegistry, registryBlockchainId);
+  console.log(registry);
+
   function renderNoWeb3() {
     return (
       <div className={styles.loader}>
@@ -64,19 +73,16 @@ function App() {
 
   return (
     <div className={styles.App}>
-      <Header />
-      <Hero />
       <div className={styles.wrapper}>
         {!context.lib && renderNoWeb3()}
         <div className={styles.contracts}>
-          <h1>BUIDL with GSN Kit!</h1>
+          <h1>Bancor Invest</h1>
           <div className={styles.widgets}>
             <Web3Info title="Web3 Provider" context={context} />
             <Counter {...context} JSON={counterJSON} instance={counterInstance} deployedNetwork={deployedNetwork} />
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }
