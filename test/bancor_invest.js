@@ -15,8 +15,7 @@ describe('BancorInvest', function () {
   const [ owner ] = accounts;
 
   beforeEach(async function () {
-    // The bundled BN library is the same one web3 uses under the hood
-    const bancor_invest = await BancorInvest.new();
+    bancor_invest = await BancorInvest.new();
     bancor_invest.initialise({ from: owner });
   });
 

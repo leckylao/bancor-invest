@@ -4,7 +4,6 @@ import "@openzeppelin/contracts-ethereum-package/contracts/GSN/GSNRecipient.sol"
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
 contract BancorInvest is Initializable, GSNRecipient {
-  // mapping (uint => Funder) accounts;
   address private _owner;
 
   function initialise() public initializer {
@@ -29,6 +28,12 @@ contract BancorInvest is Initializable, GSNRecipient {
 
   function owner() public view returns (address) {
     return _owner;
+  }
+
+  function _preRelayedCall(bytes memory context) internal returns (bytes32) {
+  }
+
+  function _postRelayedCall(bytes memory context, bool, uint256 actualCharge, bytes32) internal {
   }
 
   function setRelayHubAddress() public {
