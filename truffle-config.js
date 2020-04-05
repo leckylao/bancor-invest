@@ -10,9 +10,9 @@ const configNetwok = (network, networkId, path = "m/44'/60'/0'/0/", gas = 446503
     mnemonic, `https://${network}.infura.io/v3/${INFURA_ID}`, 
         0, 1, true, path
     ),
-  networkId,
-  gas,
-  gasPrice,
+  network_id: networkId,
+  gas: gas,
+  gasPrice: gasPrice,
 });
 
 module.exports = {
@@ -29,4 +29,8 @@ module.exports = {
     rinkeby: configNetwok('rinkeby', 4),
     main: configNetwok('mainnet', 1),
   },
+  mocha: {
+    enableTimeouts: false,
+    before_timeout: 60000 // Here is 2min but can be whatever timeout is suitable for you.
+  }
 };
