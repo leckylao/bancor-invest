@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build-contracts": "openzeppelin compile",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "oz compile && mocha --exit --recursive test",
     "pre-push": "cd client && npm run pre-push",
     "pre-commit": "cd client && npm run pre-commit"
   },
@@ -47,8 +47,10 @@
   "devDependencies": {
     "@openzeppelin/cli": "^2.5.3",
     "@openzeppelin/gsn-helpers": "^0.1.9",
+    "@openzeppelin/test-environment": "^0.1.3",
+    "@openzeppelin/test-helpers": "^0.5.5",
     "chai": "^4.2.0",
     "husky": "^3.0.4",
-    "openzeppelin-test-helpers": "^0.4.3"
+    "mocha": "^7.1.1"
   }
 }
