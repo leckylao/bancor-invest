@@ -295,7 +295,7 @@ export default function BancorInvest(props) {
             <div>
               <strong>Actions</strong>
             </div>
-            {token0Name && token0Allowance == 0 && (
+            {token0Name && token0Allowance === 0 && (
               <div>
                 <Button onClick={() => approve(token0, '2000000000000000000')}>
                   {sending ? <Loader color="white" /> : <span> Approve {token0Name}</span>}
@@ -303,7 +303,7 @@ export default function BancorInvest(props) {
                 <hr />
               </div>
             )}
-            {token1Name && token1Allowance == 0 && (
+            {token1Name && token1Allowance === 0 && (
               <div>
                 <Button onClick={() => approve(token1, '2000000000000000000')}>
                   {sending ? <Loader color="white" /> : <span> Approve {token1Name}</span>}
