@@ -79,7 +79,7 @@ export default function BancorInvest(props) {
 
   // state vars for Bancor
   const [name, setName] = useState('');
-  const [liquidity, setLiquidity] = useState('1000000000000000000');
+  const [liquidity, setLiquidity] = useState('10000000000000000');
   const [token0, setToken0] = useState('');
   const [token0Name, setToken0Name] = useState('');
   const [token0Balance, setToken0Balance] = useState(0);
@@ -91,6 +91,7 @@ export default function BancorInvest(props) {
   const [token1Allowance, setToken1Allowance] = useState('');
   const [converter, setConverter] = useState('');
   const [smartTokenBalance, setSmartTokenBalance] = useState(0);
+  const [relayTokenBalance, setRelayTokenBalance] = useState(0);
 
   // Bancor Init
   const init = useCallback(async () => {
@@ -188,6 +189,25 @@ export default function BancorInvest(props) {
         console.log('Converter: ', converter._address);
         console.log('Liquidity: ', amount);
         let tx = await converter.methods.fund(amount).send({ from: accounts[0], gas: 400000 });
+        const receipt = await getTransactionReceipt(lib, tx.transactionHash);
+        setTransactionHash(receipt.transactionHash);
+
+        setSending(false);
+      }
+    } catch (e) {
+      setSending(false);
+      console.log(e);
+    }
+  };
+
+  const liquidate = async amount => {
+    try {
+      if (!sending) {
+        setSending(true);
+
+        console.log('Converter: ', converter._address);
+        console.log('Liquidity: ', amount);
+        let tx = await converter.methods.liquidate(amount).send({ from: accounts[0], gas: 400000 });
         const receipt = await getTransactionReceipt(lib, tx.transactionHash);
         setTransactionHash(receipt.transactionHash);
 
@@ -331,6 +351,14 @@ export default function BancorInvest(props) {
               <div>
                 <Button onClick={() => fund(liquidity)}>
                   {sending ? <Loader color="white" /> : <span> Add Liquidity </span>}
+                </Button>
+                <hr />
+              </div>
+            )}
+            {smartTokenBalance && smartTokenBalance > 0 && (
+              <div>
+                <Button onClick={() => liquidate(liquidity)}>
+                  {sending ? <Loader color="white" /> : <span> Remove Liquidity </span>}
                 </Button>
                 <hr />
               </div>
