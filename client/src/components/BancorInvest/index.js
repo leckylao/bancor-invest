@@ -83,12 +83,12 @@ export default function BancorInvest(props) {
   const [token0, setToken0] = useState('');
   const [token0Name, setToken0Name] = useState('');
   const [token0Balance, setToken0Balance] = useState(0);
-  const [token0Allowance, setToken0Allowance] = useState("");
+  const [token0Allowance, setToken0Allowance] = useState('');
 
   const [token1, setToken1] = useState('');
   const [token1Name, setToken1Name] = useState('');
   const [token1Balance, setToken1Balance] = useState(0);
-  const [token1Allowance, setToken1Allowance] = useState("");
+  const [token1Allowance, setToken1Allowance] = useState('');
   const [converter, setConverter] = useState('');
   const [smartTokenBalance, setSmartTokenBalance] = useState(0);
 
@@ -120,6 +120,7 @@ export default function BancorInvest(props) {
     setName(name);
 
     let converter = new lib.eth.Contract(BancorConverter, owner);
+    console.log("Converter: ", converter._address);
     setConverter(converter);
     let connectorTokens0 = await converter.methods.connectorTokens(0).call();
     let connectorTokens1 = await converter.methods.connectorTokens(1).call();
@@ -294,22 +295,24 @@ export default function BancorInvest(props) {
             <div>
               <strong>Actions</strong>
             </div>
+              {token0Name && token0Allowance == 0 && (
             <div>
-              {token0Name && !token0Allowance && (
                 <Button onClick={() => approve(token0, '2000000000000000000')}>
                   {sending ? <Loader color="white" /> : <span> Approve {token0Name}</span>}
                 </Button>
-              )}
+              <hr/>
             </div>
+              )}
+              {token1Name && token1Allowance == 0 && (
             <div>
-              {token1Name && !token1Allowance && (
                 <Button onClick={() => approve(token1, '2000000000000000000')}>
                   {sending ? <Loader color="white" /> : <span> Approve {token1Name}</span>}
                 </Button>
-              )}
+              <hr/>
             </div>
-            <div>
+              )}
               {token1 && (
+            <div>
                 <Button
                   onClick={async () =>
                     await token1.methods.deposit().send({ from: accounts[0], value: '1000000000000000000' })
@@ -317,16 +320,19 @@ export default function BancorInvest(props) {
                 >
                   {sending ? <Loader color="white" /> : <span> Deposit {token1Name}</span>}
                 </Button>
-              )}
+              <hr/>
             </div>
+              )}
             <div>
               {<Ramp swapAmount="4000000000000000000" swapAsset="BNT" userAddress={_address} />}
+              <hr/>
             </div>
             {token0Allowance && token1Allowance && (
               <div>
                 <Button onClick={() => fund(liquidity)}>
                   {sending ? <Loader color="white" /> : <span> Add Liquidity </span>}
                 </Button>
+                <hr/>
               </div>
             )}
 
