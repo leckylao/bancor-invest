@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.5.3;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/GSN/GSNRecipient.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
@@ -21,6 +21,10 @@ contract BancorInvest is Initializable, GSNRecipient {
     converter = address(0xF5fe6280db283ba6975d72A3bD39bF57840433F7);
   }
 
+  function owner() public view returns (address) {
+    return _owner;
+  }
+
   // accept all requests
   function acceptRelayedCall(
     address,
@@ -34,10 +38,6 @@ contract BancorInvest is Initializable, GSNRecipient {
     uint256
   ) external view returns (uint256, bytes memory) {
     return _approveRelayedCall();
-  }
-
-  function owner() public view returns (address) {
-    return _owner;
   }
 
   function _preRelayedCall(bytes memory context) internal returns (bytes32) {
@@ -59,14 +59,14 @@ contract BancorInvest is Initializable, GSNRecipient {
   function approve(address _spender, uint256 _value) public
   {
     eth_token.call(abi.encodePacked("approve(address, uint256)", _spender, _value));
-    emit ETHApproval(msg.sender, _spender, _value);
+    emit ETHApproval(_msgSender(), _spender, _value);
     bnt_token.call(abi.encodePacked("approve(address, uint256)", _spender, _value));
-    emit BNTApproval(msg.sender, _spender, _value);
+    emit BNTApproval(_msgSender(), _spender, _value);
   }
 
   function fund(uint256 _amount) public
   {
     converter.call(abi.encodePacked("fund(uint256)", _amount));
-    emit Fund(msg.sender, _amount);
+    emit Fund(_msgSender(), _amount);
   }
 }
