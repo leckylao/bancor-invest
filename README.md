@@ -23,3 +23,5 @@ E.g.
 
 6. Now you have both ETH and BNT ready for the last fund to add liquidity into the pool. It has preset value of "1000000000000000000" for demo propose. 
 ![Image of APP](https://github.com/leckylao/bancor-invest/blob/master/client/public/WX20200407-060415%402x.png)
+
+7. At the end you would see both your ETH and BNT has been reduced and received 0.01 relay token
