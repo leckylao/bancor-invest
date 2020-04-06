@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useCallback }
-from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { PublicAddress, Button, Loader } from 'rimble-ui';
 import Ramp from '../Ramp/index.js';
 
@@ -85,14 +84,21 @@ export default function BancorInvest(props) {
   const [token0Balance, setToken0Balance] = useState(0);
   const [token1Name, setToken1Name] = useState('');
   const [token1Balance, setToken1Balance] = useState(0);
-  const [converter, setConverter] = useState("");
+  const [converter, setConverter] = useState('');
 
   // Bancor Init
   const init = useCallback(async () => {
-    let contractRegistryContract = new context.lib.eth.Contract(ContractRegistry, '0xFD95E724962fCfC269010A0c6700Aa09D5de3074');
-    let registryBlockchainId = await contractRegistryContract.methods.addressOf(context.lib.utils.asciiToHex('BancorConverterRegistry')).call();
-    let networkBlockchainId = await contractRegistryContract.methods.addressOf(context.lib.utils.asciiToHex('BancorNetwork')).call();
-    console.log("BancorNetwork: ", networkBlockchainId);
+    let contractRegistryContract = new context.lib.eth.Contract(
+      ContractRegistry,
+      '0xFD95E724962fCfC269010A0c6700Aa09D5de3074',
+    );
+    let registryBlockchainId = await contractRegistryContract.methods
+      .addressOf(context.lib.utils.asciiToHex('BancorConverterRegistry'))
+      .call();
+    let networkBlockchainId = await contractRegistryContract.methods
+      .addressOf(context.lib.utils.asciiToHex('BancorNetwork'))
+      .call();
+    console.log('BancorNetwork: ', networkBlockchainId);
     let registry = new context.lib.eth.Contract(BancorConverterRegistry, registryBlockchainId);
     let smartTokenCount = await registry.methods.getSmartTokenCount().call();
     let smartTokens = await registry.methods.getSmartTokens().call();
@@ -118,18 +124,18 @@ export default function BancorInvest(props) {
     setConverter(converter);
     let connectorTokens0 = await converter.methods.connectorTokens(0).call();
     let connectorTokens1 = await converter.methods.connectorTokens(1).call();
-    console.log("Path: ", connectorTokens1, smartTokens[0], connectorTokens0);
+    console.log('Path: ', connectorTokens1, smartTokens[0], connectorTokens0);
 
     let token0 = new context.lib.eth.Contract(ERC20, connectorTokens0);
-    if(instance){
+    if (instance) {
       let token0Name = await token0.methods.name().call();
       let token0Balance = await token0.methods.balanceOf(_address).call();
       setToken0Name(token0Name);
       setToken0Balance(token0Balance);
     }
     let token1 = new context.lib.eth.Contract(ERC20, connectorTokens1);
-      let token1Name = await token1.methods.name().call();
-    if(instance){
+    let token1Name = await token1.methods.name().call();
+    if (instance) {
       let token1Balance = await token1.methods.balanceOf(_address).call();
       setToken1Name(token1Name);
       setToken1Balance(token1Balance);
@@ -143,7 +149,7 @@ export default function BancorInvest(props) {
     // let getReserveRatioETH = await converter.methods.getReserveRatio(connectorTokens0).call();
     // let getReserveBalanceETH = await converter.methods.getReserveBalance(connectorTokens0).call();
     // console.log(getReserveRatioETH, getReserveBalanceETH);
-  }, [accounts, lib.eth, lib.utils]);
+  }, [_address, context.lib.eth.Contract, context.lib.utils, instance]);
 
   useEffect(() => {
     if (isGSN) init();
@@ -156,7 +162,7 @@ export default function BancorInvest(props) {
 
         const converter_address = await instance.methods.converter().call();
         console.log(converter_address);
-        const tx = await instance.methods.approve(converter._address, amount).send({from: accounts[0] });
+        const tx = await instance.methods.approve(converter._address, amount).send({ from: accounts[0] });
         const receipt = await getTransactionReceipt(lib, tx.transactionHash);
         setTransactionHash(receipt.transactionHash);
 
@@ -251,9 +257,7 @@ export default function BancorInvest(props) {
           </div>
           <div>
             <div>{name}</div>
-            {instance && (
-              <Ramp swapAmount="4000000000000000000" swapAsset="BNT" userAddress={_address}/>
-            )}
+            {instance && <Ramp swapAmount="4000000000000000000" swapAsset="BNT" userAddress={_address} />}
           </div>
           {isGSN && (
             <div>
@@ -270,7 +274,7 @@ export default function BancorInvest(props) {
                 <strong>Actions</strong>
               </div>
               <div>
-                <Button onClick={() => approve("1000000000000000000")}>
+                <Button onClick={() => approve('1000000000000000000')}>
                   {sending ? <Loader color="white" /> : <span> Approve</span>}
                 </Button>
                 {/*
@@ -285,5 +289,5 @@ export default function BancorInvest(props) {
         </React.Fragment>
       )}
     </div>
-  )
+  );
 }
