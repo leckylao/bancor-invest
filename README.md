@@ -1,5 +1,6 @@
 # bancor-invest
 Hackathon entry for https://gitcoin.co/issue/bancorprotocol/contracts/345/4120
+
 Website: https://leckylao.github.io/bancor-invest/
 
 ![Image of APP](https://github.com/leckylao/bancor-invest/blob/master/client/public/WX20200407-055523%402x.png)
