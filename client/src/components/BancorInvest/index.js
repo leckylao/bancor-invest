@@ -83,12 +83,12 @@ export default function BancorInvest(props) {
   const [token0, setToken0] = useState('');
   const [token0Name, setToken0Name] = useState('');
   const [token0Balance, setToken0Balance] = useState(0);
-  const [token0Allowance, setToken0Allowance] = useState(0);
+  const [token0Allowance, setToken0Allowance] = useState("");
 
   const [token1, setToken1] = useState('');
   const [token1Name, setToken1Name] = useState('');
   const [token1Balance, setToken1Balance] = useState(0);
-  const [token1Allowance, setToken1Allowance] = useState(0);
+  const [token1Allowance, setToken1Allowance] = useState("");
   const [converter, setConverter] = useState('');
   const [smartTokenBalance, setSmartTokenBalance] = useState(0);
 
@@ -129,7 +129,7 @@ export default function BancorInvest(props) {
     setToken0(token0);
     let token1 = new lib.eth.Contract(ERC20, connectorTokens1);
     setToken1(token1);
-    if (instance && accounts && accounts.length > 0) {
+    if (accounts && accounts.length > 0) {
       let token0Name = await token0.methods.name().call();
       let token0Balance = await token0.methods.balanceOf(accounts[0]).call();
       let token0Allowance = await token0.methods.allowance(accounts[0], owner).call();
@@ -154,7 +154,7 @@ export default function BancorInvest(props) {
     // let getReserveRatioETH = await converter.methods.getReserveRatio(connectorTokens0).call();
     // let getReserveBalanceETH = await converter.methods.getReserveBalance(connectorTokens0).call();
     // console.log(getReserveRatioETH, getReserveBalanceETH);
-  }, [accounts, lib.eth.Contract, lib.utils, instance]);
+  }, [accounts, lib.eth.Contract, lib.utils]);
 
   useEffect(() => {
     init();
@@ -165,8 +165,8 @@ export default function BancorInvest(props) {
       if (!sending) {
         setSending(true);
 
-        const converter_address = await instance.methods.converter().call();
-        console.log(converter_address);
+        // const converter_address = await instance.methods.converter().call();
+        // console.log(converter_address);
         const tx = await token.methods.approve(converter._address, amount).send({ from: accounts[0] });
         const receipt = await getTransactionReceipt(lib, tx.transactionHash);
         setTransactionHash(receipt.transactionHash);
@@ -268,8 +268,10 @@ export default function BancorInvest(props) {
   return (
     <div>
       <h3>{name} Pool </h3>
+      {/*
       {lib && !instance && renderNoDeploy()}
-      {lib && instance && (
+      */}
+      {lib && (
         <React.Fragment>
           {/*
           <div>
@@ -317,7 +319,9 @@ export default function BancorInvest(props) {
                 </Button>
               )}
             </div>
-            <div>{instance && <Ramp swapAmount="4000000000000000000" swapAsset="BNT" userAddress={_address} />}</div>
+            <div>
+              {<Ramp swapAmount="4000000000000000000" swapAsset="BNT" userAddress={_address} />}
+            </div>
             {token0Allowance && token1Allowance && (
               <div>
                 <Button onClick={() => fund(liquidity)}>
