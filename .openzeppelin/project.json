@@ -1,6 +1,8 @@
 {
   "manifestVersion": "2.2",
-  "contracts": {},
+  "contracts": {
+    "BancorInvest": "BancorInvest"
+  },
   "dependencies": {},
   "name": "app",
   "version": "1.0.2",

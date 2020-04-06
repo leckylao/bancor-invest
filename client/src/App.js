@@ -66,7 +66,7 @@ function App() {
         <div className={styles.contracts}>
           <h1>Bancor Invest</h1>
           <div className={styles.widgets}>
-            {/* <Web3Info title="Web3 Provider" context={context} />*/ }
+            {/* <Web3Info title="Web3 Provider" context={context} />*/}
             {/* <Counter {...context} JSON={counterJSON} instance={counterInstance} deployedNetwork={deployedNetwork} /> */}
             <BancorInvest {...context} instance={bancorInvestInstance} context={context} />
           </div>

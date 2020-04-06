@@ -8,6 +8,7 @@
     "@openzeppelin/solidity-loader": "^1.4.6",
     "@ramp-network/ramp-instant-sdk": "^1.8.0",
     "classnames": "^2.2.6",
+    "gh-pages": "^2.2.0",
     "json-loader": "^0.5.7",
     "node-sass": "^4.12.0",
     "prop-types": "^15.7.2",
@@ -26,8 +27,11 @@
     "eject": "react-scripts eject",
     "lint": "prettier 'src/**/*.js' --write && eslint 'src/**/*.js' --fix",
     "pre-push": "npm run lint",
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
+  "homepage": "https://leckylao.github.io/bancor-invest",
   "lint-staged": {
     "*.js": [
       "prettier --write",
