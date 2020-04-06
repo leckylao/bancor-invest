@@ -7,7 +7,8 @@
     "build-contracts": "openzeppelin compile",
     "test": "oz compile && mocha --exit --recursive test",
     "pre-push": "cd client && npm run pre-push",
-    "pre-commit": "cd client && npm run pre-commit"
+    "pre-commit": "cd client && npm run pre-commit",
+    "start": "cd client && npm run start"
   },
   "husky": {
     "hooks": {

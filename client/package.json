@@ -25,7 +25,7 @@
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "lint": "prettier 'src/**/*.js' --write && eslint 'src/**/*.js' --fix",
-    "pre-push": "",
+    "pre-push": "npm run lint",
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
