@@ -4,13 +4,9 @@ import React, { useState } from 'react';
 import { useWeb3Network, useEphemeralKey, useWeb3Injected } from '@openzeppelin/network/react';
 
 import Web3Info from './components/Web3Info/index.js';
-import Counter from './components/Counter/index.js';
+import BancorInvest from './components/BancorInvest/index.js';
 
 import styles from './App.module.scss';
-
-// import bancor from 'bancor-sdk';
-import { ContractRegistry } from './contracts/ContractRegistry';
-import { BancorConverterRegistry } from './contracts/BancorConverterRegistry';
 
 // eslint-disable-next-line no-unused-vars
 const infuraToken = process.env.REACT_APP_INFURA_TOKEN || '95202223388e49f48b423ea50a70e336';
@@ -35,37 +31,24 @@ function App() {
   //   },
   // });
 
-  // load Counter json artifact
-  let counterJSON = undefined;
+  // load BancorInvest json artifact
+  let bancorInvestJSON = undefined;
   try {
     // see https://github.com/OpenZeppelin/solidity-loader
-    counterJSON = require('../../contracts/Counter.sol');
+    bancorInvestJSON = require('../../contracts/BancorInvest.sol');
   } catch (e) {
     console.log(e);
   }
 
-  // load Counter instance
-  const [counterInstance, setCounterInstance] = useState(undefined);
+  // load BancorInvest instance
+  const [bancorInvestInstance, setBancorInvestInstance] = useState(undefined);
   let deployedNetwork = undefined;
-  if (!counterInstance && context && counterJSON && counterJSON.networks && context.networkId) {
-    deployedNetwork = counterJSON.networks[context.networkId.toString()];
+  if (!bancorInvestInstance && context && bancorInvestJSON && bancorInvestJSON.networks && context.networkId) {
+    deployedNetwork = bancorInvestJSON.networks[context.networkId.toString()];
     if (deployedNetwork) {
-      setCounterInstance(new context.lib.eth.Contract(counterJSON.abi, deployedNetwork.address));
+      setBancorInvestInstance(new context.lib.eth.Contract(bancorInvestJSON.abi, deployedNetwork.address));
     }
   }
-
-  // load bancor registry on Ropsten
-  const init = async () => {
-    let contractRegistryContract = new context.lib.eth.Contract(ContractRegistry, '0xFD95E724962fCfC269010A0c6700Aa09D5de3074');
-    let registryBlockchainId = await contractRegistryContract.methods.addressOf(context.lib.utils.asciiToHex('BancorConverterRegistry')).call();
-    console.log(registryBlockchainId);
-    let registry = new context.lib.eth.Contract(BancorConverterRegistry, registryBlockchainId);
-    let smartTokenCount = await registry.methods.getSmartTokenCount().call();
-    let smartTokens = await registry.methods.getSmartTokens().call();
-    console.log(smartTokenCount);
-    console.log(smartTokens);
-  }
-  init();
 
   function renderNoWeb3() {
     return (
@@ -83,8 +66,9 @@ function App() {
         <div className={styles.contracts}>
           <h1>Bancor Invest</h1>
           <div className={styles.widgets}>
-            <Web3Info title="Web3 Provider" context={context} />
-            <Counter {...context} JSON={counterJSON} instance={counterInstance} deployedNetwork={deployedNetwork} />
+            {/* <Web3Info title="Web3 Provider" context={context} />*/ }
+            {/* <Counter {...context} JSON={counterJSON} instance={counterInstance} deployedNetwork={deployedNetwork} /> */}
+            <BancorInvest {...context} instance={bancorInvestInstance} context={context} />
           </div>
         </div>
       </div>
