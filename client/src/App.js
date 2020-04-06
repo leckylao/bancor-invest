@@ -14,14 +14,14 @@ const infuraToken = process.env.REACT_APP_INFURA_TOKEN || '95202223388e49f48b423
 function App() {
   // get ephemeralKey
   // eslint-disable-next-line no-unused-vars
-  const signKey = useEphemeralKey();
+  // const signKey = useEphemeralKey();
 
   // get GSN web3
-  const context = useWeb3Network(`wss://ropsten.infura.io/ws/v3/${infuraToken}`, {
+  const context = useWeb3Injected(`wss://ropsten.infura.io/ws/v3/${infuraToken}`, {
     pollInterval: 15 * 1000,
-    gsn: {
-      signKey,
-    },
+    // gsn: {
+    //   signKey,
+    // },
   });
 
   // const context = useWeb3Network('http://127.0.0.1:8545', {
@@ -66,9 +66,11 @@ function App() {
         <div className={styles.contracts}>
           <h1>Bancor Invest</h1>
           <div className={styles.widgets}>
-            {/* <Web3Info title="Web3 Provider" context={context} />*/}
-            {/* <Counter {...context} JSON={counterJSON} instance={counterInstance} deployedNetwork={deployedNetwork} /> */}
-            <BancorInvest {...context} instance={bancorInvestInstance} context={context} />
+            <Web3Info title="Web3 Provider" context={context} />
+            {/*
+            <Counter {...context} JSON={counterJSON} instance={counterInstance} deployedNetwork={deployedNetwork} />
+            */}
+            <BancorInvest {...context} instance={bancorInvestInstance} />
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { PublicAddress, Button, Loader } from 'rimble-ui';
+import React, { setState, useState, useEffect, useCallback } from 'react';
+import { PublicAddress, Button, Loader, Input, Field } from 'rimble-ui';
 import Ramp from '../Ramp/index.js';
 
 // import bancor contracts;
@@ -17,8 +17,8 @@ import { utils } from '@openzeppelin/gsn-provider';
 const { isRelayHubDeployedForRecipient, getRecipientFunds } = utils;
 
 export default function BancorInvest(props) {
-  const { context, instance, accounts, lib, networkName, networkId, providerName } = props;
-  const { _address, methods } = instance || {};
+  const { lib, instance, accounts, networkName, networkId, providerName } = props;
+  const { _address } = instance || {};
 
   // GSN provider has only one key pair
   const isGSN = providerName === 'GSN';
@@ -79,90 +79,114 @@ export default function BancorInvest(props) {
 
   // state vars for Bancor
   const [name, setName] = useState('');
-  const [symbol, setSymbol] = useState('');
+  const [liquidity, setLiquidity] = useState('1000000000000000000');
+  const [token0, setToken0] = useState('');
   const [token0Name, setToken0Name] = useState('');
   const [token0Balance, setToken0Balance] = useState(0);
+  const [token0Allowance, setToken0Allowance] = useState(0);
+
+  const [token1, setToken1] = useState('');
   const [token1Name, setToken1Name] = useState('');
   const [token1Balance, setToken1Balance] = useState(0);
+  const [token1Allowance, setToken1Allowance] = useState(0);
   const [converter, setConverter] = useState('');
+  const [smartTokenBalance, setSmartTokenBalance] = useState(0);
 
   // Bancor Init
   const init = useCallback(async () => {
-    let contractRegistryContract = new context.lib.eth.Contract(
-      ContractRegistry,
-      '0xFD95E724962fCfC269010A0c6700Aa09D5de3074',
-    );
+    let contractRegistryContract = new lib.eth.Contract(ContractRegistry, '0xFD95E724962fCfC269010A0c6700Aa09D5de3074');
     let registryBlockchainId = await contractRegistryContract.methods
-      .addressOf(context.lib.utils.asciiToHex('BancorConverterRegistry'))
+      .addressOf(lib.utils.asciiToHex('BancorConverterRegistry'))
       .call();
     let networkBlockchainId = await contractRegistryContract.methods
-      .addressOf(context.lib.utils.asciiToHex('BancorNetwork'))
+      .addressOf(lib.utils.asciiToHex('BancorNetwork'))
       .call();
     console.log('BancorNetwork: ', networkBlockchainId);
-    let registry = new context.lib.eth.Contract(BancorConverterRegistry, registryBlockchainId);
-    let smartTokenCount = await registry.methods.getSmartTokenCount().call();
+    let registry = new lib.eth.Contract(BancorConverterRegistry, registryBlockchainId);
     let smartTokens = await registry.methods.getSmartTokens().call();
 
     // let smartTokenBlockchainId = await registry.methods.getSmartToken(0).call();
-    // console.log(smartTokenCount);
     // console.log(smartTokens);
     // for(let i = 0; i < smartTokens.length; i++){
-    //   let tokenContract = new context.lib.eth.Contract(SmartToken, smartTokens[i]);
+    //   let tokenContract = new lib.eth.Contract(SmartToken, smartTokens[i]);
     //   let name = await tokenContract.methods.name().call();
     //   let symbol = await tokenContract.methods.symbol().call();
     //   console.log(i, name, symbol);
     // }
 
-    let tokenContract = new context.lib.eth.Contract(SmartToken, smartTokens[0]);
+    let tokenContract = new lib.eth.Contract(SmartToken, smartTokens[0]);
     let owner = await tokenContract.methods.owner().call();
     let name = await tokenContract.methods.name().call();
     setName(name);
-    let symbol = await tokenContract.methods.symbol().call();
-    setSymbol(symbol);
 
-    let converter = new context.lib.eth.Contract(BancorConverter, owner);
+    let converter = new lib.eth.Contract(BancorConverter, owner);
     setConverter(converter);
     let connectorTokens0 = await converter.methods.connectorTokens(0).call();
     let connectorTokens1 = await converter.methods.connectorTokens(1).call();
     console.log('Path: ', connectorTokens1, smartTokens[0], connectorTokens0);
 
-    let token0 = new context.lib.eth.Contract(ERC20, connectorTokens0);
-    if (instance) {
+    let token0 = new lib.eth.Contract(ERC20, connectorTokens0);
+    setToken0(token0);
+    let token1 = new lib.eth.Contract(ERC20, connectorTokens1);
+    setToken1(token1);
+    if (instance && accounts && accounts.length > 0) {
       let token0Name = await token0.methods.name().call();
-      let token0Balance = await token0.methods.balanceOf(_address).call();
+      let token0Balance = await token0.methods.balanceOf(accounts[0]).call();
+      let token0Allowance = await token0.methods.allowance(accounts[0], owner).call();
       setToken0Name(token0Name);
       setToken0Balance(token0Balance);
-    }
-    let token1 = new context.lib.eth.Contract(ERC20, connectorTokens1);
-    let token1Name = await token1.methods.name().call();
-    if (instance) {
-      let token1Balance = await token1.methods.balanceOf(_address).call();
+      setToken0Allowance(token0Allowance);
+      let token1Name = await token1.methods.name().call();
+      let token1Balance = await token1.methods.balanceOf(accounts[0]).call();
+      let token1Allowance = await token1.methods.allowance(accounts[0], owner).call();
       setToken1Name(token1Name);
       setToken1Balance(token1Balance);
+      setToken1Allowance(token1Allowance);
+      let smartTokenBalance = await tokenContract.methods.balanceOf(accounts[0]).call();
+      setSmartTokenBalance(smartTokenBalance);
     }
 
     // Convertion
-    // let convert = await converter.methods.convert(connectorTokens1, connectorTokens0, context.lib.utils.toWei("1"), context.lib.utils.toWei("1")).call();
+    // let convert = await converter.methods.convert(connectorTokens1, connectorTokens0, lib.utils.toWei("1"), lib.utils.toWei("1")).call();
     // console.log(convert);
 
     // Get Ratio and Balance
     // let getReserveRatioETH = await converter.methods.getReserveRatio(connectorTokens0).call();
     // let getReserveBalanceETH = await converter.methods.getReserveBalance(connectorTokens0).call();
     // console.log(getReserveRatioETH, getReserveBalanceETH);
-  }, [_address, context.lib.eth.Contract, context.lib.utils, instance]);
+  }, [accounts, lib.eth.Contract, lib.utils, instance]);
 
   useEffect(() => {
-    if (isGSN) init();
+    init();
   }, [accounts, init, isGSN, lib.eth, lib.utils, networkId]);
 
-  const approve = async amount => {
+  const approve = async (token, amount) => {
     try {
       if (!sending) {
         setSending(true);
 
         const converter_address = await instance.methods.converter().call();
         console.log(converter_address);
-        const tx = await instance.methods.approve(converter._address, amount).send({ from: accounts[0] });
+        const tx = await token.methods.approve(converter._address, amount).send({ from: accounts[0] });
+        const receipt = await getTransactionReceipt(lib, tx.transactionHash);
+        setTransactionHash(receipt.transactionHash);
+
+        setSending(false);
+      }
+    } catch (e) {
+      setSending(false);
+      console.log(e);
+    }
+  };
+
+  const fund = async amount => {
+    try {
+      if (!sending) {
+        setSending(true);
+
+        console.log('Converter: ', converter._address);
+        console.log('Liquidity: ', amount);
+        let tx = await converter.methods.fund(amount).send({ from: accounts[0], gas: 400000 });
         const receipt = await getTransactionReceipt(lib, tx.transactionHash);
         setTransactionHash(receipt.transactionHash);
 
@@ -237,54 +261,75 @@ export default function BancorInvest(props) {
     );
   }
 
+  function handleChange(target) {
+    // setState({target: e.target.value});
+  }
+
   return (
     <div>
-      <h3> BancorInvest Instance </h3>
+      <h3>{name} Pool </h3>
       {lib && !instance && renderNoDeploy()}
       {lib && instance && (
         <React.Fragment>
+          {/*
           <div>
             <div>Instance address:</div>
             <div>
               <PublicAddress label="" address={_address} />
             </div>
           </div>
+          */}
           <div>
             <div>{token0Name} Balance:</div>
-            <div>{token0Balance}</div>
+            <div>{lib.utils.fromWei(token0Balance.toString())}</div>
             <div>{token1Name} Balance:</div>
-            <div>{token1Balance}</div>
+            <div>{lib.utils.fromWei(token1Balance.toString())}</div>
+            <div>{name} Balance:</div>
+            <div>{lib.utils.fromWei(smartTokenBalance.toString())}</div>
           </div>
-          <div>
-            <div>{name}</div>
-            {instance && <Ramp swapAmount="4000000000000000000" swapAsset="BNT" userAddress={_address} />}
-          </div>
-          {isGSN && (
+          <hr />
+          <React.Fragment>
             <div>
-              <div>Recipient Funds:</div>
-              <div>{lib.utils.fromWei(funds.toString(), 'ether')} ETH</div>
+              <strong>Actions</strong>
             </div>
-          )}
-          {isGSN && !funds && renderNoFunds()}
-          {!isGSN && !balance && renderNoBalance()}
+            <div>
+              {token0Name && !token0Allowance && (
+                <Button onClick={() => approve(token0, '2000000000000000000')}>
+                  {sending ? <Loader color="white" /> : <span> Approve {token0Name}</span>}
+                </Button>
+              )}
+            </div>
+            <div>
+              {token1Name && !token1Allowance && (
+                <Button onClick={() => approve(token1, '2000000000000000000')}>
+                  {sending ? <Loader color="white" /> : <span> Approve {token1Name}</span>}
+                </Button>
+              )}
+            </div>
+            <div>
+              {token1 && (
+                <Button
+                  onClick={async () =>
+                    await token1.methods.deposit().send({ from: accounts[0], value: '1000000000000000000' })
+                  }
+                >
+                  {sending ? <Loader color="white" /> : <span> Deposit {token1Name}</span>}
+                </Button>
+              )}
+            </div>
+            <div>{instance && <Ramp swapAmount="4000000000000000000" swapAsset="BNT" userAddress={_address} />}</div>
+            {token0Allowance && token1Allowance && (
+              <div>
+                <Button onClick={() => fund(liquidity)}>
+                  {sending ? <Loader color="white" /> : <span> Add Liquidity </span>}
+                </Button>
+              </div>
+            )}
 
-          {(!!funds || !!balance) && (
-            <React.Fragment>
-              <div>
-                <strong>Actions</strong>
-              </div>
-              <div>
-                <Button onClick={() => approve('1000000000000000000')}>
-                  {sending ? <Loader color="white" /> : <span> Approve</span>}
-                </Button>
-                {/*
-                <Button onClick={() => decrease(1)} disabled={!(methods && methods.decreaseCounter)} size="small">
+            {/* <Button onClick={() => decrease(1)} disabled={!(methods && methods.decreaseCounter)} size="small">
                   {sending ? <Loader className={styles.loader} color="white" /> : <span> Decrease Counter by 1</span>}
-                </Button>
-                */}
-              </div>
-            </React.Fragment>
-          )}
+                </Button> */}
+          </React.Fragment>
           {transactionHash && networkName !== 'Private' && renderTransactionHash()}
         </React.Fragment>
       )}

@@ -26,7 +26,7 @@ function Ramp(props) {
   return (
     <div>
       <Box>
-        <Button onClick={() => ramp()}> Add Liquidity </Button>
+        <Button onClick={() => ramp()}> Buy BNT </Button>
       </Box>
     </div>
   );
