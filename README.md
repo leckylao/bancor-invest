@@ -37,3 +37,7 @@ E.g.
 ![Image of APP](https://github.com/leckylao/bancor-invest/blob/master/client/public/WX20200407-060415%402x.png)
 
 7. At the end you would see both your ETH and BNT has been reduced and received 0.01 relay token
+
+Off ramp:
+1. First click the liquidate button to change layer token back to ERC20 tokens
+![Image of APP](https://github.com/leckylao/bancor-invest/blob/master/client/public/WX20200407-075100%402x.png)
