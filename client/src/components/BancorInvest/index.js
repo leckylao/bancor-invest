@@ -214,18 +214,18 @@ export default function BancorInvest(props) {
   }, [token0Balance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId, getToken0Ballance]);
 
   const getToken1Ballance = useCallback(async () => {
-    if (accounts && accounts.length && token0) {
+    if (accounts && accounts.length && token1) {
       let token1Balance = await token1.methods.balanceOf(accounts[0]).call();
       setToken1Balance(token1Balance);
     }
-  }, [accounts, token0, token1.methods]);
+  }, [accounts, token1]);
 
   useEffect(() => {
     getToken1Ballance();
   }, [token1Balance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId, getToken1Ballance]);
 
   const getToken0Allowance = useCallback(async () => {
-    if (accounts && accounts.length && converter) {
+    if (accounts && accounts.length && converter && token0) {
       let token0Allowance = await token0.methods.allowance(accounts[0], converter._address).call();
       setToken0Allowance(token0Allowance);
     }
@@ -236,7 +236,7 @@ export default function BancorInvest(props) {
   }, [token0Allowance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId, getToken0Allowance]);
 
   const getToken1Allowance = useCallback(async () => {
-    if (accounts && accounts.length && converter) {
+    if (accounts && accounts.length && converter && token1) {
       let token1Allowance = await token1.methods.allowance(accounts[0], converter._address).call();
       setToken1Allowance(token1Allowance);
     }
