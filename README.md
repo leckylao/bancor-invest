@@ -1,5 +1,5 @@
 # bancor-invest
-Hackathon entry for https://gitcoin.co/issue/bancorprotocol/contracts/345/4120
+Hackathon entry for Gitcoin Funding The Future Bancor challenge https://gitcoin.co/issue/bancorprotocol/contracts/345/4120
 
 Website: https://leckylao.github.io/bancor-invest/
 
