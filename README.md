@@ -5,11 +5,11 @@ Website: https://leckylao.github.io/bancor-invest/
 
 ![Image of APP](https://github.com/leckylao/bancor-invest/blob/master/client/public/WX20200407-055523%402x.png)
 
-Onramp:
+## Onramp concept:
 
 [Use GSN with Credit Card](https://docs.openzeppelin.com/gsn-provider/0.1/gsn-faq#can_i_use_this_with_credit_cards). As shown by using meta-transaction everyone can easily add liquidity by using credit card, their info. can be stored in the contract as an ENS address e.g. Alice.Bancor.eth
 
-Offramp:
+## Offramp concept:
 
 In the demo I can add the withdraw function which withdraw crypto to specific address. And I would suggest the following ways from crypto to fiat:
 * [Crypto ATM](https://coinatmradar.com/countries/) I have tried this personally and I have good experience with it. It's good and fast for small amount, KYC is done with text message. 
@@ -17,6 +17,7 @@ In the demo I can add the withdraw function which withdraw crypto to specific ad
 
 The idea is enabling meta-tx and integrate ramp.network for fiat on-ramp. But realised it required both the BancorConverter and ERC20 contract upgrade from using msg.sender to _msgSender() in order to have meta-tx enabled, otherwise all the approve and fund function will store it using msg.sender which is the relayer instead of the actual contract that hold the tokens. Please see discussion on https://forum.openzeppelin.com/t/having-gas-required-exceeds-allowance-error-on-my-contract-call/2597. As the contracts on https://github.com/bancorprotocol/contracts was using Solidity 0.4.26 and the meta-tx require the latest version which would be hard to do the upgrade. So at the end the on-ramp flow have to rollback to the troditional flow: 
 
+### Onramp Steps:
 1. Please switch to Ropsten network as it will be talking to the Bancor contract there. And get some test ETH from faucet (https://faucet.metamask.io/)
 
 2. Press request access to have your wallet connected
@@ -38,7 +39,7 @@ E.g.
 
 7. At the end you would see both your ETH and BNT has been reduced and received 0.01 relay token
 
-Off ramp:
+### Offramp steps:
 1. First click the liquidate button to swap layer token back to ERC20 tokens
 ![Image of APP](https://github.com/leckylao/bancor-invest/blob/master/client/public/WX20200407-075100%402x.png)
 
