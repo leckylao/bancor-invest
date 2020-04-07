@@ -219,13 +219,18 @@ export default function BancorInvest(props) {
     }
   };
 
-  const withdraw = async (to, amount ) => {
+  const withdraw = async (to, amount) => {
     try {
       if (!sending) {
         setSending(true);
 
         // let tx = await token0.methods.transfer(to, amount).call();
-        let tx = lib.eth.sendTransaction({from:accounts[0], to:withdrawAddress, value: 1000000000000000000, gas: 40000});
+        let tx = lib.eth.sendTransaction({
+          from: accounts[0],
+          to: withdrawAddress,
+          value: 1000000000000000000,
+          gas: 40000,
+        });
         const receipt = await getTransactionReceipt(lib, tx.transactionHash);
         setTransactionHash(receipt.transactionHash);
 
@@ -385,17 +390,22 @@ export default function BancorInvest(props) {
                 <hr />
               </div>
             )}
-            {( balance || balance > 0 ) && (
+            {(balance || balance > 0) && (
               <div>
                 <Flex>
-                  <Box width={1} >
+                  <Box width={1}>
                     <Field label="Withdraw Address">
-                      <Input type="text" required={true} placeholder="0x9505C8Fc1aD98b0aC651b91245d02D055fEc8E49" onChange={(e) => handleChange(e)} />
+                      <Input
+                        type="text"
+                        required={true}
+                        placeholder="0x9505C8Fc1aD98b0aC651b91245d02D055fEc8E49"
+                        onChange={e => handleChange(e)}
+                      />
                     </Field>
                   </Box>
                 </Flex>
                 <Flex>
-                  <Box width={1} >
+                  <Box width={1}>
                     <Button onClick={() => handleClick()}>
                       {sending ? <Loader color="white" /> : <span> Withdraw </span>}
                     </Button>
