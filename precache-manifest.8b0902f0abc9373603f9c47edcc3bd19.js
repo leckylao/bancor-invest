@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "71c50ddad835613264a21b4767d4dbbc",
+    "revision": "45479eed73b8bcb609e1646ced183da8",
     "url": "/bancor-invest/index.html"
   },
   {
-    "revision": "9e19ad6a885d0c0496fd",
+    "revision": "6939855e55a7b7247230",
     "url": "/bancor-invest/static/css/main.118e3ada.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/bancor-invest/static/js/2.1386bff7.chunk.js"
   },
   {
-    "revision": "9e19ad6a885d0c0496fd",
-    "url": "/bancor-invest/static/js/main.254678a6.chunk.js"
+    "revision": "6939855e55a7b7247230",
+    "url": "/bancor-invest/static/js/main.51e8741c.chunk.js"
   },
   {
     "revision": "1b27d13e74e1834249a3",
