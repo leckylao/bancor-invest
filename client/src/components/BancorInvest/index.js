@@ -189,7 +189,7 @@ export default function BancorInvest(props) {
       if (!sending) {
         setSending(true);
 
-        let tx = await token1.methods.deposit().send({ from: accounts[0], value: '1000000000000000000', gas: 40000 })
+        let tx = await token1.methods.deposit().send({ from: accounts[0], value: '1000000000000000000', gas: 40000 });
         const receipt = await getTransactionReceipt(lib, tx.transactionHash);
         setTransactionHash(receipt.transactionHash);
         getToken0Ballance();
@@ -203,48 +203,48 @@ export default function BancorInvest(props) {
   };
 
   const getToken0Ballance = useCallback(async () => {
-    if (accounts && accounts.length && token0){
+    if (accounts && accounts.length && token0) {
       let token0Balance = await token0.methods.balanceOf(accounts[0]).call();
       setToken0Balance(token0Balance);
     }
-  }, [token0, converter, accounts, lib.eth, lib.utils]);
+  }, [token0, accounts]);
 
   useEffect(() => {
     getToken0Ballance();
-  }, [token0Balance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId]);
+  }, [token0Balance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId, getToken0Ballance]);
 
   const getToken1Ballance = useCallback(async () => {
-    if (accounts && accounts.length && token0){
+    if (accounts && accounts.length && token0) {
       let token1Balance = await token1.methods.balanceOf(accounts[0]).call();
       setToken1Balance(token1Balance);
     }
-  }, [token1, converter, accounts, lib.eth, lib.utils]);
+  }, [accounts, token0, token1.methods]);
 
   useEffect(() => {
     getToken1Ballance();
-  }, [token1Balance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId]);
+  }, [token1Balance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId, getToken1Ballance]);
 
   const getToken0Allowance = useCallback(async () => {
-    if (accounts && accounts.length && converter){
+    if (accounts && accounts.length && converter) {
       let token0Allowance = await token0.methods.allowance(accounts[0], converter._address).call();
       setToken0Allowance(token0Allowance);
     }
-  }, [token0, converter, accounts, lib.eth, lib.utils]);
+  }, [token0, converter, accounts]);
 
   useEffect(() => {
     getToken0Allowance();
-  }, [token0Allowance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId]);
+  }, [token0Allowance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId, getToken0Allowance]);
 
   const getToken1Allowance = useCallback(async () => {
-    if (accounts && accounts.length && converter){
+    if (accounts && accounts.length && converter) {
       let token1Allowance = await token1.methods.allowance(accounts[0], converter._address).call();
       setToken1Allowance(token1Allowance);
     }
-  }, [token1, converter, accounts, lib.eth, lib.utils]);
+  }, [token1, converter, accounts]);
 
   useEffect(() => {
     getToken1Allowance();
-  }, [token1Allowance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId]);
+  }, [token1Allowance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId, getToken1Allowance]);
 
   const fund = async amount => {
     try {
@@ -360,8 +360,7 @@ export default function BancorInvest(props) {
             Transaction{' '}
             <Link href={`https://${networkName}.etherscan.io/tx/${transactionHash}`} target="_blank">
               <small>{transactionHash.substr(0, 6)}</small>
-            </Link>
-            {' '}
+            </Link>{' '}
             has been mined on {networkName} network.
           </Text.p>
         </Box>
@@ -406,7 +405,7 @@ export default function BancorInvest(props) {
             <div>
               <strong>Actions</strong>
             </div>
-            {token0Name && token0Allowance === "0" && (
+            {token0Name && token0Allowance === '0' && (
               <div>
                 <Button onClick={() => approve(token0, '2000000000000000000')}>
                   {sending ? <Loader color="white" /> : <span> Approve {token0Name}</span>}
@@ -414,7 +413,7 @@ export default function BancorInvest(props) {
                 <hr />
               </div>
             )}
-            {token1Name && token1Allowance === "0" && (
+            {token1Name && token1Allowance === '0' && (
               <div>
                 <Button onClick={() => approve(token1, '2000000000000000000')}>
                   {sending ? <Loader color="white" /> : <span> Approve {token1Name}</span>}
@@ -430,12 +429,12 @@ export default function BancorInvest(props) {
                 <hr />
               </div>
             )}
-              {accounts && accounts.length && (
-            <div>
-              <Ramp swapAmount="4000000000000000000" swapAsset="BNT" userAddress={_address} />
-              <hr />
-            </div>
-              )}
+            {accounts && accounts.length && (
+              <div>
+                <Ramp swapAmount="4000000000000000000" swapAsset="BNT" userAddress={_address} />
+                <hr />
+              </div>
+            )}
             {token0Allowance && token1Allowance && token0Balance > 0 && token1Balance > 0 && (
               <div>
                 <Button onClick={() => fund(liquidity)}>
