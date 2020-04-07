@@ -91,6 +91,7 @@ export default function BancorInvest(props) {
   const [token1Allowance, setToken1Allowance] = useState('');
 
   const [converter, setConverter] = useState('');
+  const [tokenContract, setTokenContract] = useState('');
   const [smartTokenBalance, setSmartTokenBalance] = useState('');
   const [withdrawAddress, setWithdrawAddress] = useState('');
 
@@ -117,6 +118,7 @@ export default function BancorInvest(props) {
     // }
 
     let tokenContract = new lib.eth.Contract(SmartToken, smartTokens[0]);
+    setTokenContract(tokenContract);
     let owner = await tokenContract.methods.owner().call();
     let name = await tokenContract.methods.name().call();
     setName(name);
@@ -135,18 +137,13 @@ export default function BancorInvest(props) {
     if (accounts && accounts.length > 0) {
       let token0Name = await token0.methods.name().call();
       setToken0Name(token0Name);
-      let token0Balance = await token0.methods.balanceOf(accounts[0]).call();
-      setToken0Balance(token0Balance);
-      let token0Allowance = await token0.methods.allowance(accounts[0], owner).call();
-      setToken0Allowance(token0Allowance);
       let token1Name = await token1.methods.name().call();
       setToken1Name(token1Name);
-      let token1Balance = await token1.methods.balanceOf(accounts[0]).call();
-      setToken1Balance(token1Balance);
-      let token1Allowance = await token1.methods.allowance(accounts[0], owner).call();
-      setToken1Allowance(token1Allowance);
-      let smartTokenBalance = await tokenContract.methods.balanceOf(accounts[0]).call();
-      setSmartTokenBalance(smartTokenBalance);
+      getToken0Ballance();
+      getToken1Ballance();
+      getToken0Allowance();
+      getToken1Allowance();
+      getSmartTokenBalance();
     }
 
     // Convertion
@@ -201,6 +198,17 @@ export default function BancorInvest(props) {
       console.log(e);
     }
   };
+
+  const getSmartTokenBalance = useCallback(async () => {
+    if (accounts && accounts.length && tokenContract) {
+      let smartTokenBalance = await tokenContract.methods.balanceOf(accounts[0]).call();
+      setSmartTokenBalance(smartTokenBalance);
+    }
+  }, [tokenContract, accounts]);
+
+  useEffect(() => {
+    getSmartTokenBalance();
+  }, [tokenContract, smartTokenBalance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId, getToken0Ballance]);
 
   const getToken0Ballance = useCallback(async () => {
     if (accounts && accounts.length && token0) {
@@ -275,6 +283,9 @@ export default function BancorInvest(props) {
         let tx = await converter.methods.liquidate(amount).send({ from: accounts[0], gas: 400000 });
         const receipt = await getTransactionReceipt(lib, tx.transactionHash);
         setTransactionHash(receipt.transactionHash);
+        getToken0Ballance();
+        getToken1Ballance();
+        getSmartTokenBalance();
 
         setSending(false);
       }
@@ -356,13 +367,13 @@ export default function BancorInvest(props) {
     return (
       <div>
         <Box>
-          <Text.p>
+          <Text>
             Transaction{' '}
             <Link href={`https://${networkName}.etherscan.io/tx/${transactionHash}`} target="_blank">
               <small>{transactionHash.substr(0, 6)}</small>
             </Link>{' '}
             has been mined on {networkName} network.
-          </Text.p>
+          </Text>
         </Box>
       </div>
     );
