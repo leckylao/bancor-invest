@@ -154,7 +154,16 @@ export default function BancorInvest(props) {
     // let getReserveRatioETH = await converter.methods.getReserveRatio(connectorTokens0).call();
     // let getReserveBalanceETH = await converter.methods.getReserveBalance(connectorTokens0).call();
     // console.log(getReserveRatioETH, getReserveBalanceETH);
-  }, [accounts, lib.eth.Contract, lib.utils]);
+  }, [
+    accounts,
+    getSmartTokenBalance,
+    getToken0Allowance,
+    getToken0Ballance,
+    getToken1Allowance,
+    getToken1Ballance,
+    lib.eth.Contract,
+    lib.utils,
+  ]);
 
   useEffect(() => {
     init();
@@ -208,7 +217,18 @@ export default function BancorInvest(props) {
 
   useEffect(() => {
     getSmartTokenBalance();
-  }, [tokenContract, smartTokenBalance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId, getToken0Ballance]);
+  }, [
+    tokenContract,
+    smartTokenBalance,
+    accounts,
+    getBalance,
+    isGSN,
+    lib.eth,
+    lib.utils,
+    networkId,
+    getToken0Ballance,
+    getSmartTokenBalance,
+  ]);
 
   const getToken0Ballance = useCallback(async () => {
     if (accounts && accounts.length && token0) {
