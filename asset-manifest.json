@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/bancor-invest/static/css/main.118e3ada.chunk.css",
-    "main.js": "/bancor-invest/static/js/main.51e8741c.chunk.js",
-    "main.js.map": "/bancor-invest/static/js/main.51e8741c.chunk.js.map",
+    "main.js": "/bancor-invest/static/js/main.7e839c29.chunk.js",
+    "main.js.map": "/bancor-invest/static/js/main.7e839c29.chunk.js.map",
     "runtime~main.js": "/bancor-invest/static/js/runtime~main.f3f189be.js",
     "runtime~main.js.map": "/bancor-invest/static/js/runtime~main.f3f189be.js.map",
-    "static/js/2.1386bff7.chunk.js": "/bancor-invest/static/js/2.1386bff7.chunk.js",
-    "static/js/2.1386bff7.chunk.js.map": "/bancor-invest/static/js/2.1386bff7.chunk.js.map",
+    "static/js/2.9186b8ea.chunk.js": "/bancor-invest/static/js/2.9186b8ea.chunk.js",
+    "static/js/2.9186b8ea.chunk.js.map": "/bancor-invest/static/js/2.9186b8ea.chunk.js.map",
     "index.html": "/bancor-invest/index.html",
-    "precache-manifest.8b0902f0abc9373603f9c47edcc3bd19.js": "/bancor-invest/precache-manifest.8b0902f0abc9373603f9c47edcc3bd19.js",
+    "precache-manifest.b408da637d5576bc3953d7556c951b67.js": "/bancor-invest/precache-manifest.b408da637d5576bc3953d7556c951b67.js",
     "service-worker.js": "/bancor-invest/service-worker.js",
     "static/css/main.118e3ada.chunk.css.map": "/bancor-invest/static/css/main.118e3ada.chunk.css.map",
     "static/media/BancorInvest.sol": "/bancor-invest/static/media/BancorInvest.35578070.sol"
