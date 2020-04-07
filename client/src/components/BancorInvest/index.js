@@ -1,5 +1,5 @@
 import React, { setState, useState, useEffect, useCallback } from 'react';
-import { PublicAddress, Button, Loader, Input, Field } from 'rimble-ui';
+import { Flex, PublicAddress, Box, Button, Loader, Input, Field } from 'rimble-ui';
 import Ramp from '../Ramp/index.js';
 
 // import bancor contracts;
@@ -82,16 +82,16 @@ export default function BancorInvest(props) {
   const [liquidity, setLiquidity] = useState('10000000000000000');
   const [token0, setToken0] = useState('');
   const [token0Name, setToken0Name] = useState('');
-  const [token0Balance, setToken0Balance] = useState(0);
+  const [token0Balance, setToken0Balance] = useState('');
   const [token0Allowance, setToken0Allowance] = useState('');
 
   const [token1, setToken1] = useState('');
   const [token1Name, setToken1Name] = useState('');
-  const [token1Balance, setToken1Balance] = useState(0);
+  const [token1Balance, setToken1Balance] = useState('');
   const [token1Allowance, setToken1Allowance] = useState('');
   const [converter, setConverter] = useState('');
-  const [smartTokenBalance, setSmartTokenBalance] = useState(0);
-  const [relayTokenBalance, setRelayTokenBalance] = useState(0);
+  const [smartTokenBalance, setSmartTokenBalance] = useState('');
+  const [withdrawAddress, setWithdrawAddress] = useState('');
 
   // Bancor Init
   const init = useCallback(async () => {
@@ -219,6 +219,24 @@ export default function BancorInvest(props) {
     }
   };
 
+  const withdraw = async (to, amount ) => {
+    try {
+      if (!sending) {
+        setSending(true);
+
+        // let tx = await token0.methods.transfer(to, amount).call();
+        let tx = lib.eth.sendTransaction({from:accounts[0], to:withdrawAddress, value: 1000000000000000000, gas: 40000});
+        const receipt = await getTransactionReceipt(lib, tx.transactionHash);
+        setTransactionHash(receipt.transactionHash);
+
+        setSending(false);
+      }
+    } catch (e) {
+      setSending(false);
+      console.log(e);
+    }
+  };
+
   function renderNoDeploy() {
     return (
       <div>
@@ -282,8 +300,12 @@ export default function BancorInvest(props) {
     );
   }
 
-  function handleChange(target) {
-    // setState({target: e.target.value});
+  function handleChange(e) {
+    setWithdrawAddress(e.target.value);
+  }
+
+  function handleClick() {
+    withdraw(withdrawAddress, 1000000000000000000);
   }
 
   return (
@@ -347,7 +369,7 @@ export default function BancorInvest(props) {
               {<Ramp swapAmount="4000000000000000000" swapAsset="BNT" userAddress={_address} />}
               <hr />
             </div>
-            {token0Allowance && token1Allowance && (
+            {token0Allowance && token1Allowance && token0Balance > 0 && token1Balance > 0 && (
               <div>
                 <Button onClick={() => fund(liquidity)}>
                   {sending ? <Loader color="white" /> : <span> Add Liquidity </span>}
@@ -361,6 +383,24 @@ export default function BancorInvest(props) {
                   {sending ? <Loader color="white" /> : <span> Remove Liquidity </span>}
                 </Button>
                 <hr />
+              </div>
+            )}
+            {( balance || balance > 0 ) && (
+              <div>
+                <Flex>
+                  <Box width={1} >
+                    <Field label="Withdraw Address">
+                      <Input type="text" required={true} placeholder="0x9505C8Fc1aD98b0aC651b91245d02D055fEc8E49" onChange={(e) => handleChange(e)} />
+                    </Field>
+                  </Box>
+                </Flex>
+                <Flex>
+                  <Box width={1} >
+                    <Button onClick={() => handleClick()}>
+                      {sending ? <Loader color="white" /> : <span> Withdraw </span>}
+                    </Button>
+                  </Box>
+                </Flex>
               </div>
             )}
 
