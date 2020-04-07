@@ -1,5 +1,5 @@
 import React, { setState, useState, useEffect, useCallback } from 'react';
-import { Flex, PublicAddress, Box, Button, Loader, Input, Field } from 'rimble-ui';
+import { Link, Text, Flex, PublicAddress, Box, Button, Loader, Input, Field } from 'rimble-ui';
 import Ramp from '../Ramp/index.js';
 
 // import bancor contracts;
@@ -89,6 +89,7 @@ export default function BancorInvest(props) {
   const [token1Name, setToken1Name] = useState('');
   const [token1Balance, setToken1Balance] = useState('');
   const [token1Allowance, setToken1Allowance] = useState('');
+
   const [converter, setConverter] = useState('');
   const [smartTokenBalance, setSmartTokenBalance] = useState('');
   const [withdrawAddress, setWithdrawAddress] = useState('');
@@ -133,16 +134,16 @@ export default function BancorInvest(props) {
     setToken1(token1);
     if (accounts && accounts.length > 0) {
       let token0Name = await token0.methods.name().call();
-      let token0Balance = await token0.methods.balanceOf(accounts[0]).call();
-      let token0Allowance = await token0.methods.allowance(accounts[0], owner).call();
       setToken0Name(token0Name);
+      let token0Balance = await token0.methods.balanceOf(accounts[0]).call();
       setToken0Balance(token0Balance);
+      let token0Allowance = await token0.methods.allowance(accounts[0], owner).call();
       setToken0Allowance(token0Allowance);
       let token1Name = await token1.methods.name().call();
-      let token1Balance = await token1.methods.balanceOf(accounts[0]).call();
-      let token1Allowance = await token1.methods.allowance(accounts[0], owner).call();
       setToken1Name(token1Name);
+      let token1Balance = await token1.methods.balanceOf(accounts[0]).call();
       setToken1Balance(token1Balance);
+      let token1Allowance = await token1.methods.allowance(accounts[0], owner).call();
       setToken1Allowance(token1Allowance);
       let smartTokenBalance = await tokenContract.methods.balanceOf(accounts[0]).call();
       setSmartTokenBalance(smartTokenBalance);
@@ -172,6 +173,8 @@ export default function BancorInvest(props) {
         const tx = await token.methods.approve(converter._address, amount).send({ from: accounts[0] });
         const receipt = await getTransactionReceipt(lib, tx.transactionHash);
         setTransactionHash(receipt.transactionHash);
+        getToken0Allowance();
+        getToken1Allowance();
 
         setSending(false);
       }
@@ -180,6 +183,68 @@ export default function BancorInvest(props) {
       console.log(e);
     }
   };
+
+  const deposit = async () => {
+    try {
+      if (!sending) {
+        setSending(true);
+
+        let tx = await token1.methods.deposit().send({ from: accounts[0], value: '1000000000000000000', gas: 40000 })
+        const receipt = await getTransactionReceipt(lib, tx.transactionHash);
+        setTransactionHash(receipt.transactionHash);
+        getToken0Ballance();
+
+        setSending(false);
+      }
+    } catch (e) {
+      setSending(false);
+      console.log(e);
+    }
+  };
+
+  const getToken0Ballance = useCallback(async () => {
+    if (accounts && accounts.length && token0){
+      let token0Balance = await token0.methods.balanceOf(accounts[0]).call();
+      setToken0Balance(token0Balance);
+    }
+  }, [token0, converter, accounts, lib.eth, lib.utils]);
+
+  useEffect(() => {
+    getToken0Ballance();
+  }, [token0Balance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId]);
+
+  const getToken1Ballance = useCallback(async () => {
+    if (accounts && accounts.length && token0){
+      let token1Balance = await token1.methods.balanceOf(accounts[0]).call();
+      setToken1Balance(token1Balance);
+    }
+  }, [token1, converter, accounts, lib.eth, lib.utils]);
+
+  useEffect(() => {
+    getToken1Ballance();
+  }, [token1Balance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId]);
+
+  const getToken0Allowance = useCallback(async () => {
+    if (accounts && accounts.length && converter){
+      let token0Allowance = await token0.methods.allowance(accounts[0], converter._address).call();
+      setToken0Allowance(token0Allowance);
+    }
+  }, [token0, converter, accounts, lib.eth, lib.utils]);
+
+  useEffect(() => {
+    getToken0Allowance();
+  }, [token0Allowance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId]);
+
+  const getToken1Allowance = useCallback(async () => {
+    if (accounts && accounts.length && converter){
+      let token1Allowance = await token1.methods.allowance(accounts[0], converter._address).call();
+      setToken1Allowance(token1Allowance);
+    }
+  }, [token1, converter, accounts, lib.eth, lib.utils]);
+
+  useEffect(() => {
+    getToken1Allowance();
+  }, [token1Allowance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId]);
 
   const fund = async amount => {
     try {
@@ -290,17 +355,16 @@ export default function BancorInvest(props) {
   function renderTransactionHash() {
     return (
       <div>
-        <p>
-          Transaction{' '}
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={`https://${networkName}.etherscan.io/tx/${transactionHash}`}
-          >
-            <small>{transactionHash.substr(0, 6)}</small>
-          </a>{' '}
-          has been mined on {networkName} network.
-        </p>
+        <Box>
+          <Text.p>
+            Transaction{' '}
+            <Link href={`https://${networkName}.etherscan.io/tx/${transactionHash}`} target="_blank">
+              <small>{transactionHash.substr(0, 6)}</small>
+            </Link>
+            {' '}
+            has been mined on {networkName} network.
+          </Text.p>
+        </Box>
       </div>
     );
   }
@@ -342,7 +406,7 @@ export default function BancorInvest(props) {
             <div>
               <strong>Actions</strong>
             </div>
-            {token0Name && token0Allowance === 0 && (
+            {token0Name && token0Allowance === "0" && (
               <div>
                 <Button onClick={() => approve(token0, '2000000000000000000')}>
                   {sending ? <Loader color="white" /> : <span> Approve {token0Name}</span>}
@@ -350,7 +414,7 @@ export default function BancorInvest(props) {
                 <hr />
               </div>
             )}
-            {token1Name && token1Allowance === 0 && (
+            {token1Name && token1Allowance === "0" && (
               <div>
                 <Button onClick={() => approve(token1, '2000000000000000000')}>
                   {sending ? <Loader color="white" /> : <span> Approve {token1Name}</span>}
@@ -358,22 +422,20 @@ export default function BancorInvest(props) {
                 <hr />
               </div>
             )}
-            {token1 && (
+            {accounts && accounts.length && token1 && (
               <div>
-                <Button
-                  onClick={async () =>
-                    await token1.methods.deposit().send({ from: accounts[0], value: '1000000000000000000' })
-                  }
-                >
+                <Button onClick={() => deposit()}>
                   {sending ? <Loader color="white" /> : <span> Deposit {token1Name}</span>}
                 </Button>
                 <hr />
               </div>
             )}
+              {accounts && accounts.length && (
             <div>
-              {<Ramp swapAmount="4000000000000000000" swapAsset="BNT" userAddress={_address} />}
+              <Ramp swapAmount="4000000000000000000" swapAsset="BNT" userAddress={_address} />
               <hr />
             </div>
+              )}
             {token0Allowance && token1Allowance && token0Balance > 0 && token1Balance > 0 && (
               <div>
                 <Button onClick={() => fund(liquidity)}>
@@ -413,12 +475,12 @@ export default function BancorInvest(props) {
                 </Flex>
               </div>
             )}
+            {transactionHash && networkName !== 'Private' && renderTransactionHash()}
 
             {/* <Button onClick={() => decrease(1)} disabled={!(methods && methods.decreaseCounter)} size="small">
                   {sending ? <Loader className={styles.loader} color="white" /> : <span> Decrease Counter by 1</span>}
                 </Button> */}
           </React.Fragment>
-          {transactionHash && networkName !== 'Private' && renderTransactionHash()}
         </React.Fragment>
       )}
     </div>
