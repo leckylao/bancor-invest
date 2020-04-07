@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/bancor-invest/precache-manifest.dc1892545e1fcce4372035ca2e93da32.js"
+  "/bancor-invest/precache-manifest.844db6a37092801152d71e02a6a68c97.js"
 );
 
 self.addEventListener('message', (event) => {
