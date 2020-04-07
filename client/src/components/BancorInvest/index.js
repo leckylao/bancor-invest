@@ -1,4 +1,4 @@
-import React, { setState, useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, Text, Flex, PublicAddress, Box, Button, Loader, Input, Field } from 'rimble-ui';
 import Ramp from '../Ramp/index.js';
 
@@ -56,23 +56,6 @@ export default function BancorInvest(props) {
   useEffect(() => {
     getDeploymentAndFunds();
   }, [getDeploymentAndFunds, instance]);
-
-  /*
-  const [count, setCount] = useState(0);
-
-  const getCount = useCallback(async () => {
-    if (instance) {
-      // Get the value from the contract to prove it worked.
-      const response = await instance.methods.getCounter().call();
-      // Update state with the result.
-      setCount(response);
-    }
-  }, [instance]);
-
-  useEffect(() => {
-    getCount();
-  }, [getCount, instance]);
-  */
 
   const [sending, setSending] = useState(false);
   const [transactionHash, setTransactionHash] = useState('');
