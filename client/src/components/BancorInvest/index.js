@@ -96,7 +96,7 @@ export default function BancorInvest(props) {
       let token0Allowance = await token0.methods.allowance(_address, converter._address).call();
       setToken0Allowance(token0Allowance);
     }
-  }, [instance, token0, converter, accounts]);
+  }, [accounts, converter, token0, instance, _address]);
 
   useEffect(() => {
     getToken0Allowance();
@@ -107,7 +107,7 @@ export default function BancorInvest(props) {
       let token1Allowance = await token1.methods.allowance(_address, converter._address).call();
       setToken1Allowance(token1Allowance);
     }
-  }, [instance, token1, converter, accounts]);
+  }, [accounts, converter, token1, instance, _address]);
 
   useEffect(() => {
     getToken1Allowance();
@@ -191,7 +191,7 @@ export default function BancorInvest(props) {
         setSending(true);
 
         const converter_address = await instance.methods.converter().call();
-        console.log("accounts[0]: ", accounts[0]);
+        console.log('accounts[0]: ', accounts[0]);
         const tx = await instance.methods.approve(converter._address, amount).send({ from: accounts[0], gas: 80000 });
         const receipt = await getTransactionReceipt(lib, tx.transactionHash);
         getToken0Allowance();
@@ -286,8 +286,12 @@ export default function BancorInvest(props) {
             <div>{token0Balance}</div>
             <div>{token1Name} Balance:</div>
             <div>{token1Balance}</div>
-            <div>{token0Name} Allowance: {token0Allowance}</div>
-            <div>{token1Name} Allowance: {token1Allowance}</div>
+            <div>
+              {token0Name} Allowance: {token0Allowance}
+            </div>
+            <div>
+              {token1Name} Allowance: {token1Allowance}
+            </div>
           </div>
           <div>
             <div>{name}</div>
