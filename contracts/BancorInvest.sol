@@ -2,6 +2,8 @@ pragma solidity ^0.5.3;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/GSN/GSNRecipient.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
+import "./converter/interfaces/IBancorConverter.sol";
 
 contract BancorInvest is Initializable, GSNRecipient {
   address private _owner;
@@ -9,6 +11,10 @@ contract BancorInvest is Initializable, GSNRecipient {
   address public bnt_token;
   address public converter;
 
+  IERC20 public constant EthToken = IERC20(0x62bd9D98d4E188e281D7B78e29334969bbE1053c);
+  IERC20 public constant BntToken = IERC20(0xD368b98d03855835E2923Dc000b3f9c2EBF1b27b);
+  IBancorConverter public constant BancorConverter =
+  IBancorConverter(0xF5fe6280db283ba6975d72A3bD39bF57840433F7);
   event ETHApproval(address indexed _owner, address indexed _spender, uint256 _value);
   event BNTApproval(address indexed _owner, address indexed _spender, uint256 _value);
   event Fund(address indexed _owner, uint256 _value);
@@ -16,8 +22,6 @@ contract BancorInvest is Initializable, GSNRecipient {
   function initialise() public initializer {
     GSNRecipient.initialize();
     _owner = _msgSender();
-    eth_token = address(0x62bd9D98d4E188e281D7B78e29334969bbE1053c);
-    bnt_token = address(0xD368b98d03855835E2923Dc000b3f9c2EBF1b27b);
     converter = address(0xF5fe6280db283ba6975d72A3bD39bF57840433F7);
   }
 
@@ -58,15 +62,17 @@ contract BancorInvest is Initializable, GSNRecipient {
 
   function approve(address _spender, uint256 _value) public
   {
-    eth_token.call(abi.encodePacked("approve(address, uint256)", _spender, _value));
+    // eth_token.call(abi.encodePacked("approve(address, uint256)", _spender, _value));
+    EthToken.approve(_spender, _value);
     emit ETHApproval(_msgSender(), _spender, _value);
-    bnt_token.call(abi.encodePacked("approve(address, uint256)", _spender, _value));
+    // bnt_token.call(abi.encodePacked("approve(address, uint256)", _spender, _value));
+    BntToken.approve(_spender, _value);
     emit BNTApproval(_msgSender(), _spender, _value);
   }
 
   function fund(uint256 _amount) public
   {
-    converter.call(abi.encodePacked("fund(uint256)", _amount));
+    BancorConverter.fund(_amount);
     emit Fund(_msgSender(), _amount);
   }
 }

@@ -80,11 +80,38 @@ export default function BancorInvest(props) {
   // state vars for Bancor
   const [name, setName] = useState('');
   const [symbol, setSymbol] = useState('');
+  const [token0, setToken0] = useState('');
+  const [token1, setToken1] = useState('');
   const [token0Name, setToken0Name] = useState('');
   const [token0Balance, setToken0Balance] = useState(0);
   const [token1Name, setToken1Name] = useState('');
   const [token1Balance, setToken1Balance] = useState(0);
   const [converter, setConverter] = useState('');
+
+  const [token0Allowance, setToken0Allowance] = useState('');
+  const [token1Allowance, setToken1Allowance] = useState('');
+
+  const getToken0Allowance = useCallback(async () => {
+    if (accounts && accounts.length && converter && token0 && instance) {
+      let token0Allowance = await token0.methods.allowance(_address, converter._address).call();
+      setToken0Allowance(token0Allowance);
+    }
+  }, [instance, token0, converter, accounts]);
+
+  useEffect(() => {
+    getToken0Allowance();
+  }, [token0Allowance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId, getToken0Allowance]);
+
+  const getToken1Allowance = useCallback(async () => {
+    if (accounts && accounts.length && converter && token1 && instance) {
+      let token1Allowance = await token1.methods.allowance(_address, converter._address).call();
+      setToken1Allowance(token1Allowance);
+    }
+  }, [instance, token1, converter, accounts]);
+
+  useEffect(() => {
+    getToken1Allowance();
+  }, [token1Allowance, accounts, getBalance, isGSN, lib.eth, lib.utils, networkId, getToken1Allowance]);
 
   // Bancor Init
   const init = useCallback(async () => {
@@ -122,11 +149,13 @@ export default function BancorInvest(props) {
 
     let converter = new context.lib.eth.Contract(BancorConverter, owner);
     setConverter(converter);
+    console.log('Converter: ', converter._address);
     let connectorTokens0 = await converter.methods.connectorTokens(0).call();
     let connectorTokens1 = await converter.methods.connectorTokens(1).call();
     console.log('Path: ', connectorTokens1, smartTokens[0], connectorTokens0);
 
     let token0 = new context.lib.eth.Contract(ERC20, connectorTokens0);
+    setToken0(token0);
     if (instance) {
       let token0Name = await token0.methods.name().call();
       let token0Balance = await token0.methods.balanceOf(_address).call();
@@ -134,6 +163,7 @@ export default function BancorInvest(props) {
       setToken0Balance(token0Balance);
     }
     let token1 = new context.lib.eth.Contract(ERC20, connectorTokens1);
+    setToken1(token1);
     let token1Name = await token1.methods.name().call();
     if (instance) {
       let token1Balance = await token1.methods.balanceOf(_address).call();
@@ -161,9 +191,11 @@ export default function BancorInvest(props) {
         setSending(true);
 
         const converter_address = await instance.methods.converter().call();
-        console.log(converter_address);
-        const tx = await instance.methods.approve(converter._address, amount).send({ from: accounts[0] });
+        console.log("accounts[0]: ", accounts[0]);
+        const tx = await instance.methods.approve(converter._address, amount).send({ from: accounts[0], gas: 80000 });
         const receipt = await getTransactionReceipt(lib, tx.transactionHash);
+        getToken0Allowance();
+        getToken1Allowance();
         setTransactionHash(receipt.transactionHash);
 
         setSending(false);
@@ -254,6 +286,8 @@ export default function BancorInvest(props) {
             <div>{token0Balance}</div>
             <div>{token1Name} Balance:</div>
             <div>{token1Balance}</div>
+            <div>{token0Name} Allowance: {token0Allowance}</div>
+            <div>{token1Name} Allowance: {token1Allowance}</div>
           </div>
           <div>
             <div>{name}</div>
@@ -274,7 +308,7 @@ export default function BancorInvest(props) {
                 <strong>Actions</strong>
               </div>
               <div>
-                <Button onClick={() => approve('1000000000000000000')}>
+                <Button onClick={() => approve('2000000000000000000')}>
                   {sending ? <Loader color="white" /> : <span> Approve</span>}
                 </Button>
                 {/*
