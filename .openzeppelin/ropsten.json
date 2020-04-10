@@ -1,11 +1,11 @@
 {
   "contracts": {
     "BancorInvest": {
-      "address": "0x82eCF2415f4C0FA486A787dc1f8410B657EE9823",
-      "constructorCode": "608060405261174f806100136000396000f3fe",
-      "bodyBytecodeHash": "60a461b51543936f937047a800b1b85c8f7bde84fcfb4d7826f7971904dcaa63",
-      "localBytecodeHash": "2bd4676040609823b81e1d5904b11abbf854e6a0fd9440f038838d6233140b8f",
-      "deployedBytecodeHash": "2bd4676040609823b81e1d5904b11abbf854e6a0fd9440f038838d6233140b8f",
+      "address": "0xae54E496AF72c8718e2d3A2363A48e0d3509ED2D",
+      "constructorCode": "6080604052611666806100136000396000f3fe",
+      "bodyBytecodeHash": "f7f37182eab3eb6d6e6ce62962302a03372915cd64e8eba73f516e26e046b37f",
+      "localBytecodeHash": "cc59922c7f8b80349d02672cc22e4299b8725d8f3abc237bb089cff771d00c37",
+      "deployedBytecodeHash": "cc59922c7f8b80349d02672cc22e4299b8725d8f3abc237bb089cff771d00c37",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -35,25 +35,25 @@
           "contract": "Initializable",
           "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
           "label": "initialized",
-          "astId": 695,
+          "astId": 764,
           "type": "t_bool",
-          "src": "757:24:4"
+          "src": "757:24:5"
         },
         {
           "contract": "Initializable",
           "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
           "label": "initializing",
-          "astId": 697,
+          "astId": 766,
           "type": "t_bool",
-          "src": "876:25:4"
+          "src": "876:25:5"
         },
         {
           "contract": "Initializable",
           "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
           "label": "______gap",
-          "astId": 759,
+          "astId": 828,
           "type": "t_array:50<t_uint256>",
-          "src": "1982:29:4"
+          "src": "1982:29:5"
         },
         {
           "contract": "GSNRecipient",
@@ -67,33 +67,33 @@
           "contract": "BancorInvest",
           "path": "contracts/BancorInvest.sol",
           "label": "_owner",
-          "astId": 770,
+          "astId": 841,
           "type": "t_address",
-          "src": "226:22:5"
+          "src": "364:22:6"
         },
         {
           "contract": "BancorInvest",
           "path": "contracts/BancorInvest.sol",
           "label": "eth_token",
-          "astId": 772,
+          "astId": 843,
           "type": "t_address",
-          "src": "252:24:5"
+          "src": "390:24:6"
         },
         {
           "contract": "BancorInvest",
           "path": "contracts/BancorInvest.sol",
           "label": "bnt_token",
-          "astId": 774,
+          "astId": 845,
           "type": "t_address",
-          "src": "280:24:5"
+          "src": "418:24:6"
         },
         {
           "contract": "BancorInvest",
           "path": "contracts/BancorInvest.sol",
           "label": "converter",
-          "astId": 776,
+          "astId": 847,
           "type": "t_address",
-          "src": "308:24:5"
+          "src": "446:24:6"
         }
       ],
       "warnings": {
@@ -103,20 +103,7 @@
         "hasInitialValuesInDeclarations": false,
         "uninitializedBaseContracts": [],
         "storageUncheckedVars": [],
-        "storageDiff": [
-          {
-            "action": "append",
-            "updated": {
-              "index": 7,
-              "contract": "BancorInvest",
-              "path": "contracts/BancorInvest.sol",
-              "label": "converter",
-              "astId": 776,
-              "type": "t_address",
-              "src": "308:24:5"
-            }
-          }
-        ]
+        "storageDiff": []
       }
     }
   },
@@ -126,7 +113,7 @@
       {
         "address": "0x1d2C3fCa66da415A2a9E1a37B139E8596667080E",
         "version": "1.0.2",
-        "implementation": "0x82eCF2415f4C0FA486A787dc1f8410B657EE9823",
+        "implementation": "0xae54E496AF72c8718e2d3A2363A48e0d3509ED2D",
         "admin": "0x9379572732E9A7756C860B0129bfbC547793107E",
         "kind": "Upgradeable"
       },
@@ -138,14 +125,14 @@
       {
         "address": "0xf3310e1D7d732D3700ecB5d13F07A566a6c98aA0",
         "version": "1.0.2",
-        "implementation": "0x82eCF2415f4C0FA486A787dc1f8410B657EE9823",
+        "implementation": "0xae54E496AF72c8718e2d3A2363A48e0d3509ED2D",
         "admin": "0x9379572732E9A7756C860B0129bfbC547793107E",
         "kind": "Upgradeable"
       },
       {
         "address": "0x75bB9fC72E893EA3E1975a473Ec4669AE76a36B1",
         "version": "1.0.2",
-        "implementation": "0x82eCF2415f4C0FA486A787dc1f8410B657EE9823",
+        "implementation": "0xae54E496AF72c8718e2d3A2363A48e0d3509ED2D",
         "admin": "0x9379572732E9A7756C860B0129bfbC547793107E",
         "kind": "Upgradeable"
       }
