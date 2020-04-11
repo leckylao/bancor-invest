@@ -46,10 +46,6 @@ contract('BancorInvest', accounts => {
 
   // WIP: Need to have BNT and ETH token before calling fund
   it('should be able to fund', async () => {
-    let ETHAllowance = await ETHContract.allowance(bancor_invest.address, "0xF5fe6280db283ba6975d72A3bD39bF57840433F7")
-    let BNTAllowance = await BNTContract.allowance(bancor_invest.address, "0xF5fe6280db283ba6975d72A3bD39bF57840433F7")
-    ETHAllowance.should.bignumber.equal("1000000000000000000");
-    BNTAllowance.should.bignumber.equal("1000000000000000000");
     let fund = await bancor_invest.fund("1000000000000000000", {gas: 1000000});
     expectEvent(fund, 'Fund', {_value: "1000000000000000000" });
   });
