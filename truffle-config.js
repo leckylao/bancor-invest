@@ -32,5 +32,18 @@ module.exports = {
   mocha: {
     enableTimeouts: false,
     before_timeout: 60000 // Here is 2min but can be whatever timeout is suitable for you.
+  },
+  compilers: {
+    solc: {
+      // version: "0.5.2",
+      docker: false,
+      settings: {
+       optimizer: {
+         enabled: true,
+         runs: 200
+       },
+       evmVersion: "byzantium"
+      }
+    }
   }
 };
