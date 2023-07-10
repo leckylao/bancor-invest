@@ -52,6 +52,6 @@
     "@openzeppelin/test-helpers": "^0.5.5",
     "chai": "^4.2.0",
     "husky": "^3.0.4",
-    "mocha": "^7.1.1"
+    "mocha": "^10.2.0"
   }
 }
